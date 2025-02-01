@@ -1,8 +1,16 @@
 const lastMessageTime = {}; // Inicialización del registro de tiempos
-
+let connectedUsers = 0;
 module.exports = (io) => {
     io.on("connection", (socket) => {
         console.log("new connection");
+
+        connectedUsers++;
+        console.log("New connection to bets socket. Connected users:", connectedUsers);
+
+        socket.on("disconnect", () => {
+            connectedUsers--;
+            console.log("User disconnected from bets socket. Connected users:", connectedUsers);
+        });
 
         socket.on("disconnect", () => {
             console.log("user disconnected");
@@ -62,5 +70,10 @@ module.exports = (io) => {
             io.to(room).emit("stopTyping", username);
             console.log(`typing stopped in room ${room}`);
         });
+
+        socket.on('getConnectedUsers', (callback) => {
+            callback({ connectedUsers });
+        });
+
     });
 };
