@@ -6,7 +6,7 @@ const helmet = require("helmet");
 const { logger } = require("./utils/logger.js");
 
 const env = process.env;
-
+const cors = require("cors");
 const server = express();
 
 
@@ -29,6 +29,14 @@ if (env.NODE_ENV === 'production') {
 }
 
 server.use(helmet({ crossOriginEmbedderPolicy: false }));
+
+// Configuración de CORS
+server.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    credentials: true
+}));
 
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
